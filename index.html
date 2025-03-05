@@ -11,47 +11,68 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
 
-        // Creo il componente ListaAnimali
         function ListaAnimali() {
+            const { useState } = React;
+            const [animals, setAnimals] = useState([]);     // Lista degli animali
+            const [modalShow, setModalShow] = useState(false);      // Visualizzazione modale
+            const [newAnimal, setNewAnimal] = useState('');     // Nuovo animale da aggiungere
 
-            const { useState } = React
-
-            const [animals, setAnimals] = useState([])
-            const animalsChoice = ['Cane', 'Gatto', 'Pappagallo', 'Coniglio', 'Cavallo', 'Tartaruga', 'Criceto', 'Pecora']
-
-            // Funzione per aggiungere un animale
-            const addAnimals = () => {
-                setAnimals([...animals, animalsChoice[Math.floor(Math.random() * animalsChoice.length)]])
-            }
+            // Funzione per aggiungere un animale alla lista
+            const addAnimal = () => {
+                setAnimals([...animals, newAnimal]);
+                setNewAnimal('');
+                setModalShow(false);
+            };
 
             return (
                 <>
-                    <button onClick={addAnimals}>Aggiungi Animale</button>
+                    <button onClick={() => setModalShow(true)}>Aggiungi Animale</button>
                     <details>
                         <summary>Apri la lista</summary>
                         <h2>Animali</h2>
                         <ul>
-                            {animals && animals.map(animal => <li key={animal}>{animal}</li>)}
+                            {animals.map((animal, index) => <li key={index}>{animal}</li>)}
                         </ul>
                     </details>
+                    <Modal
+                        title="Aggiungi un nuovo animale"
+                        content={<input type="text" value={newAnimal} onChange={(e) => setNewAnimal(e.target.value)} placeholder="Nome dell'animale" />}
+                        show={modalShow}
+                        onClose={() => setModalShow(false)}
+                        onConfirm={addAnimal}
+                    />
                 </>
+            );
+        }
+
+        // Componente per la modale
+        function Modal({ title, content, show, onClose, onConfirm }) {
+
+            const { createPortal } = ReactDOM;
+            return show && createPortal(
+                <div className="modal-container">
+                    <div className="modal">
+                        <h2>{title}</h2>
+                        {content}
+                        <div>
+                            <button onClick={onConfirm}>Conferma</button>
+                            <button onClick={onClose}>Annulla</button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
             )
         }
     </script>
+    <!-- Renderizzo il componente lista animali -->
     <script type="text/babel">
-        // Renderizzo il componente ListaAnimali
-
         const { createRoot } = ReactDOM
-
-        // Recupero l'elemento dove montare il componente
+        // Recupero l'elemento dove montare il componente 
         const listaAnimali = document.querySelector('.lista-animali')
-
-        // Inizializzo React nell'elemento recuperato
+        // Inizializzo React nell'elemento recuperato 
         const root = createRoot(listaAnimali)
-
         // Monto e renderizzo il componente 
-        root.render(<ListaAnimali />)
-
+        root.render(<ListaAnimali />) 
     </script>
 </head>
 
