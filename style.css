@@ -58,3 +58,11 @@ img {
     padding: 20px;
     border-radius: 5px;
 }
+
+.animal-card {
+    background-color: bisque;
+    padding: 2rem;
+    display: flex;
+    border-radius: 10px;
+    margin-top: 1rem;
+}
